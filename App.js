@@ -6,6 +6,8 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import { useEffect, useState } from "react";
 
+import { Entypo } from "@expo/vector-icons";
+
 import SignIn from "./screens/SigninScreen";
 import SignUp from "./screens/SignupScreen";
 import Home from "./screens/HomeScreen";
@@ -19,15 +21,12 @@ export default function App() {
 
   const setToken = async (token) => {
     if (token) {
-      console.log("here");
-      await AsyncStorage.getItem("userToken", token);
+      await AsyncStorage.setItem("userToken", token);
     } else {
-      console.log("double here");
       await AsyncStorage.removeItem("userToken");
     }
     setUserToken(token);
   };
-  console.log(userToken);
 
   useEffect(() => {
     // Fetch the token from storage then navigate to our appropriate place
@@ -75,6 +74,9 @@ export default function App() {
                   name="TabHome"
                   options={{
                     tabBarLabel: "Home",
+                    tabBarIcon: () => (
+                      <Entypo name="home" size={24} color="#FF385C" />
+                    ),
                   }}
                 >
                   {() => (
