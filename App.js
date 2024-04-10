@@ -6,11 +6,16 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import { useEffect, useState } from "react";
 
-import { Entypo } from "@expo/vector-icons";
+import { Entypo, Ionicons, EvilIcons } from "@expo/vector-icons";
 
 import SignIn from "./screens/SigninScreen";
 import SignUp from "./screens/SignupScreen";
 import Home from "./screens/HomeScreen";
+import Profile from "./screens/ProfileScreen";
+import Room from "./screens/RoomScreen";
+import AroundMe from "./screens/AroundmeScreen";
+
+import HeaderIcon from "./components/HeaderIcon";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -62,10 +67,11 @@ export default function App() {
           </>
         ) : (
           // User is signed in ! 🎉
-          <Stack.Screen name="Tab">
+          <Stack.Screen name="Tab" options={{ headerShown: false }}>
             {() => (
               <Tab.Navigator
                 screenOptions={{
+                  headerShown: false,
                   tabBarActiveTintColor: "tomato",
                   tabBarInactiveTintColor: "gray",
                 }}
@@ -84,12 +90,73 @@ export default function App() {
                       <Stack.Screen
                         name="Home"
                         options={{
-                          title: "My App",
-                          headerStyle: { backgroundColor: "#FF385C" },
-                          headerTitleStyle: { color: "white" },
+                          headerStyle: { backgroundColor: "white" },
+                          headerTitleStyle: { color: "#FF385" },
+                          headerTitle: () => <HeaderIcon size={"small"} />,
                         }}
                       >
                         {() => <Home />}
+                      </Stack.Screen>
+                      <Stack.Screen
+                        name="Room"
+                        options={{
+                          headerTitle: () => <HeaderIcon size={"small"} />,
+                          headerBackVisible: false,
+                        }}
+                      >
+                        {(props) => <Room {...props} />}
+                      </Stack.Screen>
+                    </Stack.Navigator>
+                  )}
+                </Tab.Screen>
+                <Tab.Screen
+                  name="AroundMe"
+                  options={{
+                    tabBarLabel: "Around Me",
+                    tabBarIcon: ({ color, size }) => (
+                      <EvilIcons name={"location"} size={24} color="#FF385C" />
+                    ),
+                  }}
+                >
+                  {() => (
+                    <Stack.Navigator>
+                      <Stack.Screen
+                        name="AroundMe"
+                        options={{
+                          title: "Around Me",
+                          tabBarLabel: "Around Me",
+                          headerStyle: { backgroundColor: "#FF495A" },
+                          headerTitleStyle: {
+                            color: "white",
+                            fontSize: 20,
+                          },
+                        }}
+                      >
+                        {() => <AroundMe />}
+                      </Stack.Screen>
+                    </Stack.Navigator>
+                  )}
+                </Tab.Screen>
+                <Tab.Screen
+                  name="ProfileTab"
+                  options={{
+                    tabBarLabel: "My profile",
+                    tabBarIcon: ({}) => (
+                      <Ionicons name="person-sharp" size={24} color="#FF385C" />
+                    ),
+                  }}
+                >
+                  {() => (
+                    <Stack.Navigator screenOptions={{ headerShown: true }}>
+                      <Stack.Screen
+                        name="Profile"
+                        options={{
+                          headerStyle: { backgroundColor: "white" },
+                          headerTitleStyle: { color: "#FF385" },
+                          headerTitle: () => <HeaderIcon size={"small"} />,
+                        }}
+                      >
+                        {() => <Profile />}
                       </Stack.Screen>
                     </Stack.Navigator>
                   )}
