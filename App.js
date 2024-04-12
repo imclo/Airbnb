@@ -72,7 +72,7 @@ export default function App() {
               <Tab.Navigator
                 screenOptions={{
                   headerShown: false,
-                  tabBarActiveTintColor: "tomato",
+                  tabBarActiveTintColor: "#FF385C",
                   tabBarInactiveTintColor: "gray",
                 }}
               >
@@ -80,8 +80,8 @@ export default function App() {
                   name="TabHome"
                   options={{
                     tabBarLabel: "Home",
-                    tabBarIcon: () => (
-                      <Entypo name="home" size={24} color="#FF385C" />
+                    tabBarIcon: ({ color }) => (
+                      <Entypo name="home" size={24} color={color} />
                     ),
                   }}
                 >
@@ -110,29 +110,24 @@ export default function App() {
                   )}
                 </Tab.Screen>
                 <Tab.Screen
-                  name="AroundMe"
+                  name="TabAroundMe"
                   options={{
                     tabBarLabel: "Around Me",
-                    tabBarIcon: ({ color, size }) => (
-                      <EvilIcons name={"location"} size={24} color="#FF385C" />
+                    tabBarIcon: ({ color }) => (
+                      <EvilIcons name={"location"} size={24} color={color} />
                     ),
                   }}
                 >
                   {() => (
                     <Stack.Navigator>
                       <Stack.Screen
-                        name="AroundMe"
+                        name="AroundMeScreen"
                         options={{
-                          title: "Around Me",
-                          tabBarLabel: "Around Me",
-                          headerStyle: { backgroundColor: "#FF495A" },
-                          headerTitleStyle: {
-                            color: "white",
-                            fontSize: 20,
-                          },
+                          headerTitle: () => <HeaderIcon size={"small"} />,
+                          headerBackVisible: false,
                         }}
                       >
-                        {() => <AroundMe />}
+                        {() => <AroundMe setToken={setToken} />}
                       </Stack.Screen>
                     </Stack.Navigator>
                   )}
@@ -141,8 +136,8 @@ export default function App() {
                   name="ProfileTab"
                   options={{
                     tabBarLabel: "My profile",
-                    tabBarIcon: ({}) => (
-                      <Ionicons name="person-sharp" size={24} color="#FF385C" />
+                    tabBarIcon: ({ color }) => (
+                      <Ionicons name="person-sharp" size={24} color={color} />
                     ),
                   }}
                 >

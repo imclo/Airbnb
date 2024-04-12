@@ -40,11 +40,11 @@ export default function Home() {
   const stars = (rating) => {
     const tabStar = [];
     for (let i = 0; i < rating; i++) {
-      tabStar.push(<AntDesign name="star" size={24} color="yellow" />);
+      tabStar.push(<AntDesign name="star" size={24} color="#FFB000" />);
     }
 
     for (let j = 0; j < 5 - rating; j++) {
-      tabStar.push(<AntDesign name="star" size={24} color="grey" />);
+      tabStar.push(<AntDesign name="star" size={24} color="#BBBBBB" />);
     }
 
     return tabStar;
@@ -90,6 +90,7 @@ export default function Home() {
                           alignItems: "center",
                           marginTop: 5,
                         }}
+                        key={item.ratingValue}
                       >
                         {stars(item.ratingValue)}
                         <Text style={styles.homeBlocReview}>
@@ -151,9 +152,9 @@ const styles = StyleSheet.create({
     flex: 4,
   },
   homeBlocReview: {
-    color: "#bbbbbb",
-    paddingLeft: 30,
-    fontSize: 18,
+    color: "#CACACA",
+    paddingLeft: 10,
+    fontSize: 15,
   },
   homeBlocDetailPic: {
     width: 50,

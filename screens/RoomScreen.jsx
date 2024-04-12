@@ -11,13 +11,48 @@ import axios from "axios";
 
 import Swiper from "react-native-swiper";
 
+import MapView, { Marker } from "react-native-maps";
+import { PROVIDER_GOOGLE } from "react-native-maps";
+import * as Location from "expo-location";
+
 import { AntDesign } from "@expo/vector-icons";
 
 export default function Room({ route }) {
   const { id } = route.params;
   const [data, setData] = useState();
   const [isLoading, setIsLoading] = useState(true);
-  const [displayAllText, setDisplayAllText] = useState(false);
+  const [show, setShow] = useState(false);
+  const [latitude, setLatitude] = useState();
+  const [longitude, setLongitude] = useState();
+
+  //   console.log(latitude);
+  //   console.log(longitude);
+
+  const getPermission = async () => {
+    try {
+      // demander la permission
+
+      const { status } = await Location.requestForegroundPermissionsAsync();
+
+      console.log(status); // granted/denied
+
+      if (status === "granted") {
+        const location = await Location.getCurrentPositionAsync();
+        // console.log(location.coords.latitude);
+        setLatitude(location.coords.latitude);
+        // console.log(location.coords.longitude);
+        setLongitude(location.coords.longitude);
+      } else {
+        alert("location denied");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getPermission();
+  }, []);
 
   const fetchData = async () => {
     try {
@@ -40,11 +75,11 @@ export default function Room({ route }) {
   const stars = (rating) => {
     const tabStar = [];
     for (let i = 0; i < rating; i++) {
-      tabStar.push(<AntDesign name="star" size={24} color="yellow" />);
+      tabStar.push(<AntDesign name="star" size={24} color="#FFB000" />);
     }
 
     for (let j = 0; j < 5 - rating; j++) {
-      tabStar.push(<AntDesign name="star" size={24} color="grey" />);
+      tabStar.push(<AntDesign name="star" size={24} color="#BBBBBB" />);
     }
 
     return tabStar;
@@ -104,13 +139,34 @@ export default function Room({ route }) {
             <TouchableOpacity
               style={styles.description}
               onPress={() => {
-                setDisplayAllText(!displayAllText);
+                setShow(!show);
               }}
+              key={data.description}
             >
-              <Text numberOfLines={displayAllText === false ? 3 : null}>
+              <Text numberOfLines={show === false ? 3 : null}>
                 {data.description}
               </Text>
             </TouchableOpacity>
+          </View>
+          <View>
+            <MapView
+              style={{ width: "100%", height: 200 }}
+              provider={PROVIDER_GOOGLE}
+              initialRegion={{
+                latitude: 48.856614,
+                longitude: 2.3522219,
+                latitudeDelta: 0.1,
+                longitudeDelta: 0.1,
+              }}
+              showsUserLocation={true}
+            >
+              <Marker
+                coordinate={{
+                  longitude: data.location[0],
+                  latitude: data.location[1],
+                }}
+              />
+            </MapView>
           </View>
         </>
       )}
@@ -161,10 +217,18 @@ const styles = StyleSheet.create({
   },
   homeBlocDetailPic: {
     width: 50,
-    height: 70,
+    height: 90,
     resizeMode: "cover",
     borderRadius: 50,
     flex: 1,
     marginLeft: 10,
+  },
+  description: {
+    marginTop: 20,
+  },
+  homeBlocReview: {
+    color: "#CACACA",
+    paddingLeft: 10,
+    fontSize: 15,
   },
 });
