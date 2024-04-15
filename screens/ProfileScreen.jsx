@@ -117,6 +117,13 @@ export default function Profile({ userToken, setTokenAndId, userId }) {
           console.log(error);
         }
       }
+
+      isPictureModified && setIsPictureModified(false);
+      isInfosModified && setIsInfosModified(false);
+
+      setIsLoading(false);
+    } else {
+      setMessage("Change at least one information");
     }
   };
 
@@ -207,6 +214,7 @@ export default function Profile({ userToken, setTokenAndId, userId }) {
                 // placeholder="email"
                 value={email}
                 style={[styles.marginBigBottom, styles.h2, styles.signinput]}
+                autoCapitalize="none"
                 onChangeText={(text) => {
                   setEmail(text);
                   setIsInfosModified(true);
@@ -216,6 +224,7 @@ export default function Profile({ userToken, setTokenAndId, userId }) {
                 // placeholder="username"
                 value={username}
                 style={[styles.marginBigBottom, styles.h2, styles.signinput]}
+                autoCapitalize="none"
                 onChangeText={(text) => {
                   setUsername(text);
                   setIsInfosModified(true);

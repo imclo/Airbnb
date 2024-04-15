@@ -51,6 +51,7 @@ export default function Signin({ setTokenAndId }) {
       <View style={styles.inputBlock}>
         <TextInput
           placeholder="email"
+          autoCapitalize="none"
           style={styles.signinput}
           onChangeText={(text) => {
             setEmail(text);
