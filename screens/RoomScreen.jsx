@@ -101,15 +101,15 @@ export default function Room({ route }) {
               activeDotColor="grey"
               buttonColor="yellow"
             >
-              {data.photos.map((photo) => {
+              {data.photos.map((photo, index) => {
                 return (
-                  <View style={styles.slide} key={photo.picture_id}>
+                  <View style={styles.slide} key={index}>
                     <Image style={styles.homePic} source={{ uri: photo.url }} />
                   </View>
                 );
               })}
             </Swiper>
-            <View style={styles.roomBlocPrice} key={data.price}>
+            <View style={styles.roomBlocPrice}>
               <Text style={styles.price}> {data.price} €</Text>
             </View>
           </View>

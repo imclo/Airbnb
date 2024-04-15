@@ -40,11 +40,11 @@ export default function Home() {
   const stars = (rating) => {
     const tabStar = [];
     for (let i = 0; i < rating; i++) {
-      tabStar.push(<AntDesign name="star" size={24} color="#FFB000" />);
+      tabStar.push(<AntDesign key={i} name="star" size={24} color="#FFB000" />);
     }
 
-    for (let j = 0; j < 5 - rating; j++) {
-      tabStar.push(<AntDesign name="star" size={24} color="#BBBBBB" />);
+    for (let j = rating; j < 5; j++) {
+      tabStar.push(<AntDesign key={j} name="star" size={24} color="#BBBBBB" />);
     }
 
     return tabStar;

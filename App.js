@@ -27,11 +27,11 @@ export default function App() {
 
   const setTokenAndId = async (token, id) => {
     if (token & id) {
-      AsyncStorage.setItem("userToken", token);
-      AsyncStorage.setItem("userId", id);
+      await AsyncStorage.setItem("userToken", token);
+      await AsyncStorage.setItem("userId", id);
     } else {
-      AsyncStorage.removeItem("userToken");
-      AsyncStorage.removeItem("userId");
+      await AsyncStorage.removeItem("userToken");
+      await AsyncStorage.removeItem("userId");
     }
     setUserToken(token);
     setUserId(id);
@@ -43,7 +43,8 @@ export default function App() {
       // We should also handle error for production apps
       const userToken = await AsyncStorage.getItem("userToken");
       const userId = await AsyncStorage.getItem("userId");
-
+      console.log(userToken);
+      console.log(userId);
       // This will switch to the App screen or Auth screen and this loading
       // screen will be unmounted and thrown away.
       setUserToken(userToken);

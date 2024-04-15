@@ -1,14 +1,21 @@
 import { useState, useEffect } from "react";
 import {
-  Button,
   Text,
   View,
   StyleSheet,
   TextInput,
   Pressable,
+  ActivityIndicator,
+  SafeAreaView,
+  ScrollView,
 } from "react-native";
 
 import axios from "axios";
+
+import * as ImagePicker from "expo-image-picker";
+
+import { FontAwesome5 } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 
 export default function Profile({ userToken, setTokenAndId, userId }) {
   const [isLoading, setIsLoading] = useState(true);
@@ -16,10 +23,14 @@ export default function Profile({ userToken, setTokenAndId, userId }) {
   const [username, setUsername] = useState("");
   const [description, setDescription] = useState("");
   const [picture, setPicture] = useState(null);
+  const [isPictureModified, setIsPictureModified] = useState(false);
+  const [isInfosModified, setIsInfosModified] = useState(false);
+  const [displayMessage, setDisplayMessage] = useState(null);
 
   const fetchData = async () => {
     try {
       // console.log(userToken);
+      // console.log(userId);
       const { data } = await axios.get(
         `https://lereacteur-bootcamp-api.herokuapp.com/api/airbnb/user/${userId}`,
         {
@@ -28,7 +39,7 @@ export default function Profile({ userToken, setTokenAndId, userId }) {
           },
         }
       );
-      console.log(data);
+      // console.log(data);
       setUsername(data.username);
       setEmail(data.email);
       setDescription(data.description);
@@ -39,7 +50,7 @@ export default function Profile({ userToken, setTokenAndId, userId }) {
 
       setIsLoading(false);
     } catch (error) {
-      const errorMessage = error.response.data.error;
+      console.log(error);
     }
   };
 
@@ -47,54 +58,155 @@ export default function Profile({ userToken, setTokenAndId, userId }) {
     fetchData();
   }, []);
 
-  return (
-    <View style={[styles.profileDescription, styles.alignItemsCenter]}>
-      <Text style={[styles.h2, styles.marginBottom]}>Email</Text>
-      <TextInput
-        placeholder="email"
-        value={email}
-        style={[styles.marginBigBottom, styles.h2, styles.signinput]}
-        onChangeText={(text) => {
-          setEmail(text);
-        }}
-      />
-      <Text style={[styles.h2, styles.marginBottom]}>Username</Text>
-      <TextInput
-        placeholder="username"
-        value={username}
-        style={[styles.marginBigBottom, styles.h2, styles.signinput]}
-        onChangeText={(text) => {
-          setUsername(text);
-        }}
-      />
-      <Text style={[styles.h2, styles.marginBottom]}>Description</Text>
-      <TextInput
-        onChangeText={(text) => {
-          setDescription(text);
-        }}
-        value={description}
-        placeholder="description"
-        multiline={true}
-        numberOfLines={20}
-        style={[styles.marginBigBottom, styles.h2, styles.signinputDescription]}
-      />
+  // get a picture from library
+  const uploadPicture = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
-      <View style={styles.button}>
-        <Pressable
-          style={styles.buttonTitle}
-          title="Log Out"
-          onPress={() => {
-            setTokenAndId(null);
-          }}
-        >
-          <Text style={styles.buttonTitle}>Log Out</Text>
-        </Pressable>
+    if (status === "granted") {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        allowsEditing: true,
+        aspect: [1, 1],
+      });
+
+      if (!result.canceled) {
+        setPicture(result.assets[0].uri);
+
+        if (!isPictureModified) {
+          setIsPictureModified(true);
+        }
+      }
+    }
+    setDisplayMessage(false);
+  };
+
+  // get picture from camera
+  const takePicture = async () => {
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+
+    if (status === "granted") {
+      const result = await ImagePicker.launchCameraAsync();
+
+      if (!result.canceled) {
+        setPicture(result.assets[0].uri);
+
+        if (!isPictureModified) {
+          setIsPictureModified(true);
+        }
+      }
+    }
+    setDisplayMessage(false);
+  };
+
+  return (
+    <SafeAreaView style={styles.safeAreaView}>
+      <View style={styles.container}>
+        {isLoading === true ? (
+          <View style={styles.loading}>
+            <ActivityIndicator size="large" color="#FF385C" />
+          </View>
+        ) : (
+          <ScrollView contentContainerStyle={styles.scrollView}>
+            <View style={styles.profileDescription}>
+              <View style={styles.topView}>
+                <Pressable style={styles.pictureView}>
+                  {picture ? (
+                    <Image
+                      source={{ uri: picture }}
+                      style={styles.picture}
+                      resizeMode="cover"
+                    />
+                  ) : (
+                    <FontAwesome5 name="user-alt" size={100} color="#E7E7E7" />
+                  )}
+                </Pressable>
+                <View style={styles.icons}>
+                  <Pressable
+                    onPress={() => {
+                      uploadPicture();
+                    }}
+                  >
+                    <MaterialIcons
+                      name="photo-library"
+                      size={30}
+                      color="grey"
+                    />
+                  </Pressable>
+                  <Pressable
+                    style={styles.iconButton}
+                    onPress={() => {
+                      takePicture();
+                    }}
+                  >
+                    <FontAwesome5 name="camera" size={30} color="grey" />
+                  </Pressable>
+                </View>
+              </View>
+              <TextInput
+                // placeholder="email"
+                value={email}
+                style={[styles.marginBigBottom, styles.h2, styles.signinput]}
+                onChangeText={(text) => {
+                  setEmail(text);
+                }}
+              />
+              <TextInput
+                // placeholder="username"
+                value={username}
+                style={[styles.marginBigBottom, styles.h2, styles.signinput]}
+                onChangeText={(text) => {
+                  setUsername(text);
+                }}
+              />
+              <TextInput
+                onChangeText={(text) => {
+                  setDescription(text);
+                }}
+                value={description}
+                // placeholder="description"
+                multiline={true}
+                numberOfLines={20}
+                style={[
+                  styles.marginBigBottom,
+                  styles.h2,
+                  styles.signinputDescription,
+                ]}
+              />
+
+              <View style={styles.button}>
+                <Pressable style={styles.buttonTitle} title="Update">
+                  <Text style={styles.buttonTitle}>Update</Text>
+                </Pressable>
+              </View>
+              <View style={styles.button}>
+                <Pressable
+                  style={styles.buttonTitle}
+                  title="Log out"
+                  onPress={() => {
+                    setTokenAndId(null);
+                  }}
+                >
+                  <Text style={styles.buttonTitle}>Log Out</Text>
+                </Pressable>
+              </View>
+            </View>
+          </ScrollView>
+        )}
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeAreaView: {
+    flex: 1,
+    backgroundColor: "white",
+  },
+  scrollView: {
+    alignItems: "center",
+  },
+  container: {
+    backgroundColor: "white",
+  },
   h2: {
     fontSize: 18,
   },
@@ -112,10 +224,12 @@ const styles = StyleSheet.create({
     borderTopColor: "lightpink",
     borderLeftColor: "lightpink",
     borderRightColor: "lightpink",
-    fontSize: 20,
+    fontSize: 18,
     height: 100,
     textAlignVertical: "top",
     padding: 5,
+    marginLeft: 30,
+    marginRight: 30,
   },
   signinput: {
     borderWidth: 1,
@@ -123,10 +237,12 @@ const styles = StyleSheet.create({
     borderTopColor: "white",
     borderLeftColor: "white",
     borderRightColor: "white",
-    fontSize: 20,
+    fontSize: 18,
+    marginLeft: 30,
+    marginRight: 30,
   },
   buttonTitle: {
-    fontSize: 20,
+    fontSize: 18,
     color: "#828282",
   },
   button: {
@@ -139,6 +255,33 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginHorizontal: 100,
-    marginTop: 50,
+    marginTop: 20,
+  },
+  picture: {
+    height: 150,
+    width: 150,
+    borderRadius: 150,
+  },
+  pictureView: {
+    marginVertical: 20,
+    width: 170,
+    height: 170,
+    borderRadius: 170,
+    alignItems: "center",
+    justifyContent: "center",
+    borderColor: "#FFC3C8",
+    borderWidth: 2,
+  },
+  topView: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 30,
+  },
+  icons: {
+    marginLeft: 20,
+  },
+  iconButton: {
+    marginTop: 40,
   },
 });

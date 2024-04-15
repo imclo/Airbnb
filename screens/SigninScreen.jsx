@@ -21,9 +21,9 @@ export default function Signin({ setTokenAndId }) {
           "https://lereacteur-bootcamp-api.herokuapp.com/api/airbnb/user/log_in",
           { email, password }
         );
-        // console.log(response.data);
+        console.log(response.data);
         if (response.data.token && response.data.id) {
-          setTokenAndId(response.data.token, response.data._id);
+          setTokenAndId(response.data.token, response.data.id);
         } else {
           setErrorMessage("An error occurred");
         }
