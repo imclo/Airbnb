@@ -13,9 +13,6 @@ export default function AroundMe() {
   const [latitude, setLatitude] = useState();
   const [longitude, setLongitude] = useState();
 
-  // console.log(latitude);
-  // console.log(longitude);
-
   const getPermission = async () => {
     try {
       // demander la permission
@@ -44,6 +41,8 @@ export default function AroundMe() {
 
   const fetchData = async () => {
     try {
+      // console.log(latitude);
+      // console.log(longitude);
       const { data } = await axios.get(
         `https://lereacteur-bootcamp-api.herokuapp.com/api/airbnb/rooms/around?latitude=${latitude}&longitude=${longitude}`
         // `https://lereacteur-bootcamp-api.herokuapp.com/api/airbnb/rooms/around?latitude=48.856614&longitude=2.3522219`
@@ -54,14 +53,13 @@ export default function AroundMe() {
       // console.log(longitude);
       setIsLoading(false);
     } catch (error) {
-      console.log(error);
-      alert("Cannot load");
+      console.log(error.response.data);
     }
   };
 
   useEffect(() => {
     fetchData();
-  }, [latitude, longitude]);
+  }, [longitude, latitude]);
 
   return isLoading ? (
     <ActivityIndicator size="large" color="#FF385C" />

@@ -7,9 +7,9 @@ import { useState } from "react";
 
 import { FontAwesome5 } from "@expo/vector-icons";
 
-export default function Signin({ setToken }) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+export default function Signin({ setTokenAndId }) {
+  const [email, setEmail] = useState("Helloworld@mail.fr");
+  const [password, setPassword] = useState("azerty");
   const [errorMessage, setErrorMessage] = useState("");
 
   const navigation = useNavigation();
@@ -22,9 +22,11 @@ export default function Signin({ setToken }) {
           { email, password }
         );
         // console.log(response.data);
-        const token = response.data.token;
-        setToken(token);
-        console.log(token);
+        if (response.data.token && response.data.id) {
+          setTokenAndId(response.data.token, response.data._id);
+        } else {
+          setErrorMessage("An error occurred");
+        }
       } catch (error) {
         console.log(error);
       }

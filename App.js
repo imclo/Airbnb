@@ -23,14 +23,18 @@ const Tab = createBottomTabNavigator();
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [userToken, setUserToken] = useState(null);
+  const [userId, setUserId] = useState(null);
 
-  const setToken = async (token) => {
-    if (token) {
-      await AsyncStorage.setItem("userToken", token);
+  const setTokenAndId = async (token, id) => {
+    if (token & id) {
+      AsyncStorage.setItem("userToken", token);
+      AsyncStorage.setItem("userId", id);
     } else {
-      await AsyncStorage.removeItem("userToken");
+      AsyncStorage.removeItem("userToken");
+      AsyncStorage.removeItem("userId");
     }
     setUserToken(token);
+    setUserId(id);
   };
 
   useEffect(() => {
@@ -38,10 +42,12 @@ export default function App() {
     const bootstrapAsync = async () => {
       // We should also handle error for production apps
       const userToken = await AsyncStorage.getItem("userToken");
+      const userId = await AsyncStorage.getItem("userId");
 
       // This will switch to the App screen or Auth screen and this loading
       // screen will be unmounted and thrown away.
       setUserToken(userToken);
+      setUserId(userId);
       setIsLoading(false);
     };
 
@@ -59,10 +65,10 @@ export default function App() {
         {userToken === null ? (
           <>
             <Stack.Screen name="SignIn">
-              {() => <SignIn setToken={setToken} />}
+              {() => <SignIn setTokenAndId={setTokenAndId} />}
             </Stack.Screen>
             <Stack.Screen name="SignUp">
-              {() => <SignUp setToken={setToken} />}
+              {() => <SignUp setTokenAndId={setTokenAndId} />}
             </Stack.Screen>
           </>
         ) : (
@@ -127,7 +133,7 @@ export default function App() {
                           headerBackVisible: false,
                         }}
                       >
-                        {() => <AroundMe setToken={setToken} />}
+                        {() => <AroundMe setTokenAndId={setTokenAndId} />}
                       </Stack.Screen>
                     </Stack.Navigator>
                   )}
@@ -151,7 +157,14 @@ export default function App() {
                           headerTitle: () => <HeaderIcon size={"small"} />,
                         }}
                       >
-                        {() => <Profile />}
+                        {(props) => (
+                          <Profile
+                            {...props}
+                            userToken={userToken}
+                            setTokenAndId={setTokenAndId}
+                            userId={userId}
+                          />
+                        )}
                       </Stack.Screen>
                     </Stack.Navigator>
                   )}

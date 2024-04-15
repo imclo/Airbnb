@@ -7,7 +7,7 @@ import { useState } from "react";
 
 import { FontAwesome5 } from "@expo/vector-icons";
 
-export default function Signup({ setToken }) {
+export default function Signup({ setTokenAndId }) {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [description, setDescription] = useState("");
@@ -27,8 +27,11 @@ export default function Signup({ setToken }) {
             { email, username, description, password }
           );
           // console.log(response.data);
-          const userToken = response.data.token; //Token généré par backend
-          setToken(userToken);
+          if (data.token && data.id) {
+            setTokenAndId(data.token, data._id);
+          } else {
+            setErrorMessage("An error occurred");
+          }
           alert("Account created");
         } catch (error) {
           console.log(error.response.data.error);

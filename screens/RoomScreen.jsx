@@ -109,7 +109,7 @@ export default function Room({ route }) {
                 );
               })}
             </Swiper>
-            <View style={styles.roomBlocPrice}>
+            <View style={styles.roomBlocPrice} key={data.price}>
               <Text style={styles.price}> {data.price} €</Text>
             </View>
           </View>
