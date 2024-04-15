@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   SafeAreaView,
   ScrollView,
+  Image,
 } from "react-native";
 
 import axios from "axios";
@@ -60,28 +61,61 @@ export default function Profile({ userToken, setTokenAndId, userId }) {
 
   // update informations
   const editInformations = async () => {
-    if (isInfosModified) {
-      try {
-        const { data } = await axios.put(
-          `https://lereacteur-bootcamp-api.herokuapp.com/api/airbnb/user/update`,
-          { email, username, description },
-          {
-            headers: {
-              Authorization: "Bearer " + userToken,
-            },
-          }
-        );
+    if (isPictureModified || isInfosModified) {
+      setIsLoading(true);
 
-        if (data) {
-          setUsername(data.username);
-          setEmail(data.email);
-          setDescription(data.description);
-          setMessage("Your profile has been updated");
-        } else {
-          setMessage("An error occurred");
+      if (isInfosModified) {
+        try {
+          const { data } = await axios.put(
+            `https://lereacteur-bootcamp-api.herokuapp.com/api/airbnb/user/update`,
+            { email, username, description },
+            {
+              headers: {
+                Authorization: "Bearer " + userToken,
+              },
+            }
+          );
+
+          if (data) {
+            setUsername(data.username);
+            setEmail(data.email);
+            setDescription(data.description);
+            setMessage("Your profile has been updated");
+          } else {
+            setMessage("An error occurred");
+          }
+        } catch (error) {
+          console.log(error);
         }
-      } catch (error) {
-        console.log(error);
+      }
+
+      if (isPictureModified) {
+        try {
+          const tab = picture.split(".");
+          const formData = new FormData();
+          formData.append("photo", {
+            uri: picture,
+            name: `my-pic.${tab[tab.length - 1]}`,
+            type: `image/${tab[tab.length - 1]}`,
+          });
+
+          const { data } = await axios.put(
+            `https://lereacteur-bootcamp-api.herokuapp.com/api/airbnb/user/upload_picture`,
+            formData,
+            {
+              headers: {
+                Authorization: "Bearer " + userToken,
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
+          if (data) {
+            setPicture(data.photo?.url);
+            setMessage("Your photo has been updated");
+          }
+        } catch (error) {
+          console.log(error);
+        }
       }
     }
   };
