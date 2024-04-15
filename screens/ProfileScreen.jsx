@@ -25,7 +25,7 @@ export default function Profile({ userToken, setTokenAndId, userId }) {
   const [picture, setPicture] = useState(null);
   const [isPictureModified, setIsPictureModified] = useState(false);
   const [isInfosModified, setIsInfosModified] = useState(false);
-  const [displayMessage, setDisplayMessage] = useState(null);
+  const [message, setMessage] = useState(null);
 
   const fetchData = async () => {
     try {
@@ -58,6 +58,34 @@ export default function Profile({ userToken, setTokenAndId, userId }) {
     fetchData();
   }, []);
 
+  // update informations
+  const editInformations = async () => {
+    if (isInfosModified) {
+      try {
+        const { data } = await axios.put(
+          `https://lereacteur-bootcamp-api.herokuapp.com/api/airbnb/user/update`,
+          { email, username, description },
+          {
+            headers: {
+              Authorization: "Bearer " + userToken,
+            },
+          }
+        );
+
+        if (data) {
+          setUsername(data.username);
+          setEmail(data.email);
+          setDescription(data.description);
+          setMessage("Your profile has been updated");
+        } else {
+          setMessage("An error occurred");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
   // get a picture from library
   const uploadPicture = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -76,7 +104,7 @@ export default function Profile({ userToken, setTokenAndId, userId }) {
         }
       }
     }
-    setDisplayMessage(false);
+    setMessage(false);
   };
 
   // get picture from camera
@@ -94,7 +122,7 @@ export default function Profile({ userToken, setTokenAndId, userId }) {
         }
       }
     }
-    setDisplayMessage(false);
+    setMessage(false);
   };
 
   return (
@@ -147,6 +175,7 @@ export default function Profile({ userToken, setTokenAndId, userId }) {
                 style={[styles.marginBigBottom, styles.h2, styles.signinput]}
                 onChangeText={(text) => {
                   setEmail(text);
+                  setIsInfosModified(true);
                 }}
               />
               <TextInput
@@ -155,11 +184,13 @@ export default function Profile({ userToken, setTokenAndId, userId }) {
                 style={[styles.marginBigBottom, styles.h2, styles.signinput]}
                 onChangeText={(text) => {
                   setUsername(text);
+                  setIsInfosModified(true);
                 }}
               />
               <TextInput
                 onChangeText={(text) => {
                   setDescription(text);
+                  setIsInfosModified(true);
                 }}
                 value={description}
                 // placeholder="description"
@@ -172,8 +203,18 @@ export default function Profile({ userToken, setTokenAndId, userId }) {
                 ]}
               />
 
+              <View style={styles.view}>
+                {message && <Text style={styles.message}>{message}</Text>}
+              </View>
+
               <View style={styles.button}>
-                <Pressable style={styles.buttonTitle} title="Update">
+                <Pressable
+                  style={styles.buttonTitle}
+                  title="Update"
+                  onPress={() => {
+                    editInformations();
+                  }}
+                >
                   <Text style={styles.buttonTitle}>Update</Text>
                 </Pressable>
               </View>
@@ -283,5 +324,12 @@ const styles = StyleSheet.create({
   },
   iconButton: {
     marginTop: 40,
+  },
+  view: {
+    height: 30,
+  },
+  message: {
+    color: "#FF385C",
+    textAlign: "center",
   },
 });
