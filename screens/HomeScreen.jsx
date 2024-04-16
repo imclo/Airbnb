@@ -8,7 +8,12 @@ import {
   FlatList,
   Image,
   TouchableOpacity,
+  SafeAreaView,
+  StatusBar,
 } from "react-native";
+
+import Constants from "expo-constants";
+
 import axios from "axios";
 
 import { AntDesign } from "@expo/vector-icons";
@@ -51,65 +56,72 @@ export default function Home() {
   };
 
   return (
-    <View style={styles.container}>
-      {isLoading === true ? (
-        <View style={styles.loading}>
-          <ActivityIndicator size="large" color="#FF385C" />
-        </View>
-      ) : (
-        <FlatList
-          style={{ height: "100%" }}
-          data={data}
-          keyExtractor={(elem) => elem._id}
-          renderItem={({ item }) => {
-            return (
-              <TouchableOpacity
-                nextFocusRight="true"
-                onPress={() => {
-                  navigation.navigate("Room", {
-                    id: item._id,
-                  });
-                }}
-              >
-                <View style={styles.homeBloc}>
-                  <Image
-                    style={styles.homePic}
-                    source={{ uri: item.photos[0].url }}
-                  />
-                  <View style={styles.homeBlocPrice}>
-                    <Text style={styles.price}>{item.price} €</Text>
-                  </View>
-                  <View style={styles.homeBlocDetail}>
-                    <View style={styles.homeBlocDescription}>
-                      <Text style={styles.title} numberOfLines={1}>
-                        {item.title}
-                      </Text>
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          alignItems: "center",
-                          marginTop: 5,
-                        }}
-                        key={item.ratingValue}
-                      >
-                        {stars(item.ratingValue)}
-                        <Text style={styles.homeBlocReview}>
-                          {item.reviews} avis
-                        </Text>
-                      </View>
-                    </View>
+    <SafeAreaView>
+      <StatusBar
+        style={{
+          marginTop: Platform.OS === "ios" ? 0 : Constants.statusBarHeight,
+        }}
+      />
+      <View style={styles.container}>
+        {isLoading === true ? (
+          <View style={styles.loading}>
+            <ActivityIndicator size="large" color="#FF385C" />
+          </View>
+        ) : (
+          <FlatList
+            style={{ height: "100%" }}
+            data={data}
+            keyExtractor={(elem) => elem._id}
+            renderItem={({ item }) => {
+              return (
+                <TouchableOpacity
+                  nextFocusRight="true"
+                  onPress={() => {
+                    navigation.navigate("Room", {
+                      id: item._id,
+                    });
+                  }}
+                >
+                  <View style={styles.homeBloc}>
                     <Image
-                      style={styles.homeBlocDetailPic}
-                      source={{ uri: item.user.account.photo.url }}
+                      style={styles.homePic}
+                      source={{ uri: item.photos[0].url }}
                     />
+                    <View style={styles.homeBlocPrice}>
+                      <Text style={styles.price}>{item.price} €</Text>
+                    </View>
+                    <View style={styles.homeBlocDetail}>
+                      <View style={styles.homeBlocDescription}>
+                        <Text style={styles.title} numberOfLines={1}>
+                          {item.title}
+                        </Text>
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                            marginTop: 5,
+                          }}
+                          key={item.ratingValue}
+                        >
+                          {stars(item.ratingValue)}
+                          <Text style={styles.homeBlocReview}>
+                            {item.reviews} avis
+                          </Text>
+                        </View>
+                      </View>
+                      <Image
+                        style={styles.homeBlocDetailPic}
+                        source={{ uri: item.user.account.photo.url }}
+                      />
+                    </View>
                   </View>
-                </View>
-              </TouchableOpacity>
-            );
-          }}
-        />
-      )}
-    </View>
+                </TouchableOpacity>
+              );
+            }}
+          />
+        )}
+      </View>
+    </SafeAreaView>
   );
 }
 

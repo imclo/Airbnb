@@ -1,4 +1,11 @@
-import { View, Text, Pressable, StyleSheet, TextInput } from "react-native";
+import {
+  View,
+  Text,
+  Pressable,
+  StyleSheet,
+  TextInput,
+  Redict,
+} from "react-native";
 import axios from "axios";
 
 import { useNavigation } from "@react-navigation/core";
@@ -88,7 +95,7 @@ export default function Signin({ setTokenAndId }) {
       <View>
         <Pressable
           onPress={() => {
-            navigation.navigate("Signup");
+            navigation.navigate("SignUp");
           }}
         >
           <Text style={styles.txtRedirection}>No account? Register</Text>

@@ -131,7 +131,7 @@ export default function Signup({ setTokenAndId }) {
       <View>
         <Pressable
           onPress={() => {
-            navigation.navigate("Signin");
+            navigation.navigate("SignIn");
           }}
         >
           <Text style={styles.txtConnect}>
