@@ -8,8 +8,8 @@ import { useState } from "react";
 import { FontAwesome5 } from "@expo/vector-icons";
 
 export default function Signin({ setTokenAndId }) {
-  const [email, setEmail] = useState("Helloworld@mail.fr");
-  const [password, setPassword] = useState("azerty");
+  const [email, setEmail] = useState("nono@airbnb-api.com");
+  const [password, setPassword] = useState("pass");
   const [errorMessage, setErrorMessage] = useState("");
 
   const navigation = useNavigation();
