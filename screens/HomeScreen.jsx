@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
   StatusBar,
+  Platform,
 } from "react-native";
 
 import Constants from "expo-constants";
@@ -75,7 +76,6 @@ export default function Home() {
             renderItem={({ item }) => {
               return (
                 <TouchableOpacity
-                  nextFocusRight="true"
                   onPress={() => {
                     navigation.navigate("Room", {
                       id: item._id,
